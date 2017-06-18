@@ -258,3 +258,18 @@ TEST_CASE("Integers", "[options]")
   CHECK(positional[3] == 0);
   CHECK(positional[4] == 0xab);
 }
+
+TEST_CASE("Unsigned integers", "[options]")
+{
+  cxxopts::Options options("parses_unsigned", "detects unsigned errors");
+  options.add_options()
+    ("positional", "Integers", cxxopts::value<std::vector<unsigned int>>());
+
+  Argv av({"ints", "--", "-2"});
+
+  char** argv = av.argv();
+  auto argc = av.argc();
+
+  options.parse_positional("positional");
+  CHECK_THROWS(options.parse(argc, argv));
+}

@@ -462,12 +462,23 @@ namespace cxxopts
 
       if (negative)
       {
+        if (!std::numeric_limits<T>::is_signed)
+        {
+          throw argument_incorrect_type(text);
+        }
+
         value = -value;
       }
     }
 
     void
-    parse_value(const std::string& text, int& value)
+    parse_value(const std::string& text, uint32_t& value)
+    {
+      integer_parser(text, value);
+    }
+
+    void
+    parse_value(const std::string& text, int32_t& value)
     {
       integer_parser(text, value);
     }

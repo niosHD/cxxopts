@@ -234,3 +234,27 @@ TEST_CASE("Empty with implicit value", "[implicit]")
   REQUIRE(options.count("implicit") == 1);
   REQUIRE(options["implicit"].as<std::string>() == "");
 }
+
+TEST_CASE("Integers", "[options]")
+{
+  cxxopts::Options options("parses_integers", "parses integers correctly");
+  options.add_options()
+    ("positional", "Integers", cxxopts::value<std::vector<int>>());
+
+  Argv av({"ints", "--", "5", "6", "-6", "0", "0xab"});
+
+  char** argv = av.argv();
+  auto argc = av.argc();
+
+  options.parse_positional("positional");
+  options.parse(argc, argv);
+
+  REQUIRE(options.count("positional") == 5);
+
+  auto& positional = options["positional"].as<std::vector<int>>();
+  CHECK(positional[0] == 5);
+  CHECK(positional[1] == 6);
+  CHECK(positional[2] == -6);
+  CHECK(positional[3] == 0);
+  CHECK(positional[4] == 0xab);
+}

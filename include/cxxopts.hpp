@@ -411,20 +411,65 @@ namespace cxxopts
 
   namespace values
   {
+    std::basic_regex<char> integer_pattern
+      ("(-)?(0x)?([1-9a-zA-Z][0-9a-zA-Z]*)|(0)");
+
     template <typename T>
     void
-    parse_value(const std::string& text, T& value)
+    integer_parser(const std::string& text, T& value)
     {
-      std::istringstream is(text);
-      if (!(is >> value))
+      //TODO: exceptions
+      std::smatch match;
+      std::regex_match(text, match, integer_pattern);
+
+      if (match.length() == 0)
       {
         throw argument_incorrect_type(text);
       }
 
-      if (is.rdbuf()->in_avail() != 0)
+      if (match.length(4) > 0)
       {
-        throw argument_incorrect_type(text);
+        value = 0;
+        return;
       }
+
+      bool negative = match.length(1) > 0;
+      auto base = match.length(2) > 0 ? 16 : 10;
+
+      auto value_match = match[3];
+
+      value = 0;
+
+      for (auto iter = value_match.first; iter != value_match.second; ++iter)
+      {
+        int digit = 0;
+
+        if (*iter >= '0' && *iter <= '9')
+        {
+          digit = *iter - '0';
+        }
+        else if (*iter >= 'a' && *iter <= 'f')
+        {
+          digit = *iter - 'a' + 10;
+        }
+        else if (*iter >= 'A' && *iter <= 'F')
+        {
+          digit = *iter - 'A' + 10;
+        }
+
+        value = value * base + digit;
+      }
+
+      if (negative)
+      {
+        value = -value;
+      }
+    }
+
+    void
+    parse_value(const std::string& text, int& value)
+    {
+      integer_parser(text, value);
     }
 
     inline

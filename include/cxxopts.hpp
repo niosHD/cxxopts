@@ -472,6 +472,18 @@ namespace cxxopts
     }
 
     void
+    parse_value(const std::string& text, uint16_t& value)
+    {
+      integer_parser(text, value);
+    }
+
+    void
+    parse_value(const std::string& text, int16_t& value)
+    {
+      integer_parser(text, value);
+    }
+
+    void
     parse_value(const std::string& text, uint32_t& value)
     {
       integer_parser(text, value);
@@ -479,6 +491,18 @@ namespace cxxopts
 
     void
     parse_value(const std::string& text, int32_t& value)
+    {
+      integer_parser(text, value);
+    }
+
+    void
+    parse_value(const std::string& text, uint64_t& value)
+    {
+      integer_parser(text, value);
+    }
+
+    void
+    parse_value(const std::string& text, int64_t& value)
     {
       integer_parser(text, value);
     }

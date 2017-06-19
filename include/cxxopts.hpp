@@ -31,6 +31,7 @@ THE SOFTWARE.
 #endif
 
 #include <cstring>
+#include <cctype>
 #include <exception>
 #include <iostream>
 #include <map>
@@ -469,6 +470,38 @@ namespace cxxopts
 
         value = -value;
       }
+
+      // check that it didn't overflow
+      std::ostringstream out;
+      if ( base == 16)
+      {
+        out << "0x" << std::hex;
+      }
+
+      out << value;
+
+      auto lower = text;
+      std::for_each(lower.begin(), lower.end(),
+        [](char& c)
+        {
+          c = std::tolower(c);
+        });
+      if (out.str() != lower)
+      {
+        throw argument_incorrect_type(text);
+      }
+    }
+
+    void
+    parse_value(const std::string& text, uint8_t& value)
+    {
+      integer_parser(text, value);
+    }
+
+    void
+    parse_value(const std::string& text, int8_t& value)
+    {
+      integer_parser(text, value);
     }
 
     void

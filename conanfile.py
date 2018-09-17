@@ -1,7 +1,6 @@
 from conans import ConanFile, CMake, tools
 import os
 import re
-import sys
 
 # parse the version from the cxxopts.hpp file
 def get_version():
@@ -12,7 +11,7 @@ def get_version():
         data = myfile.read()
     version = []
     for x in ['MAJOR', 'MINOR', 'PATCH']:
-        component = re.search("#define CXXOPTS__VERSION_%s\s+([^\s]+)" % x, data)
+        component = re.search("#define CXXOPTS__VERSION_%s\\s+([^\\s]+)" % x, data)
         if component:
             version.append(component.group(1))
     if len(version) > 0:
